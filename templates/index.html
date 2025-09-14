@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIbnb - AI-Powered Travel Planning</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-plane-departure"></i>
+                <h1>AIbnb</h1>
+            </div>
+            <p class="tagline">AI-Powered Travel Planning Reimagined</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="input-container">
+                    <h2>Tell us about your dream trip</h2>
+                    <p class="subtitle">Describe where you want to go, what you like, and we'll create the perfect itinerary for you</p>
+                    
+                    <div class="prompt-input-wrapper">
+                        <textarea 
+                            id="travelPrompt" 
+                            placeholder="Example: I want to visit Tokyo for 5 days with my partner. We love authentic food, temples, and modern culture but want to avoid crowded tourist traps. Budget is around $2000 for activities and dining."
+                            rows="4"
+                        ></textarea>
+                        <button id="generateBtn" class="generate-btn">
+                            <i class="fas fa-magic"></i>
+                            Generate My Itinerary
+                        </button>
+                    </div>
+
+                    <!-- Example prompts -->
+                    <div class="example-prompts">
+                        <h3>Try these examples:</h3>
+                        <div class="example-grid">
+                            <div class="example-card" onclick="fillExample(this)">
+                                <i class="fas fa-mountain"></i>
+                                <p>Adventure trip to Switzerland for 7 days, love hiking and skiing, budget $3000</p>
+                            </div>
+                            <div class="example-card" onclick="fillExample(this)">
+                                <i class="fas fa-utensils"></i>
+                                <p>Food tour of Italy for 10 days, passionate about authentic cuisine and wine</p>
+                            </div>
+                            <div class="example-card" onclick="fillExample(this)">
+                                <i class="fas fa-umbrella-beach"></i>
+                                <p>Relaxing beach vacation in Bali for 6 days, prefer quiet spots over party scenes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Section -->
+            <section id="loadingSection" class="loading-section hidden">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <h3>Creating your perfect itinerary...</h3>
+                    <p>Our AI is analyzing your preferences and finding the best experiences</p>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section hidden">
+                <div class="results-header">
+                    <h2>Your Personalized Itinerary</h2>
+                    <button id="newSearchBtn" class="new-search-btn">
+                        <i class="fas fa-plus"></i>
+                        Plan Another Trip
+                    </button>
+                </div>
+
+                <div class="results-content">
+                    <!-- Travel Info Summary -->
+                    <div id="travelSummary" class="travel-summary">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <span class="label">Destination</span>
+                                    <span id="summaryDestination" class="value">-</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-calendar"></i>
+                                <div>
+                                    <span class="label">Duration</span>
+                                    <span id="summaryDuration" class="value">-</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-users"></i>
+                                <div>
+                                    <span class="label">Travelers</span>
+                                    <span id="summaryTravelers" class="value">-</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <i class="fas fa-heart"></i>
+                                <div>
+                                    <span class="label">Interests</span>
+                                    <span id="summaryInterests" class="value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preference Discovery Sections -->
+                    <div id="preferenceSections" class="preference-sections">
+                        <!-- Sections will be populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Legacy support for old itinerary format -->
+                    <div id="itinerarySections" class="itinerary-sections hidden">
+                        <!-- Sections will be populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Fallback for non-sectioned content -->
+                    <div id="itineraryContent" class="itinerary-content hidden">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <section id="errorSection" class="error-section hidden">
+                <div class="error-container">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Oops! Something went wrong</h3>
+                    <p id="errorMessage">We encountered an error while generating your itinerary. Please try again.</p>
+                    <button id="retryBtn" class="retry-btn">
+                        <i class="fas fa-redo"></i>
+                        Try Again
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 AIbnb - Revolutionizing travel planning with AI</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
