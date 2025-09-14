@@ -92,14 +92,18 @@ async function handleGenerateItinerary() {
         });
         
         const data = await response.json();
+        console.log('API Response:', data); // Debug logging
         
         if (!response.ok) {
+            console.error('HTTP Error:', response.status, data);
             throw new Error(data.error || 'Failed to generate itinerary');
         }
         
         if (data.success) {
+            console.log('Success - showing results');
             showResults(data);
         } else {
+            console.error('API returned success=false:', data);
             throw new Error(data.error || 'Unknown error occurred');
         }
         
@@ -121,28 +125,23 @@ function showLoading() {
 function showResults(data) {
     hideAllSections();
     
-    // Store current data
-    preferencesData = data.sections || [];
+    // Store current data - handle both old (sections) and new (categories) format
+    preferencesData = data.categories || data.sections || [];
     
-    // Populate travel summary
-    if (data.travel_info) {
-        const info = data.travel_info;
-        summaryDestination.textContent = info.destination || 'Not specified';
-        summaryDuration.textContent = info.duration || 'Not specified';
-        summaryTravelers.textContent = info.travelers || 'Not specified';
-        summaryInterests.textContent = Array.isArray(info.interests) 
-            ? info.interests.join(', ') 
-            : (info.interests || 'Not specified');
-    }
+    // Populate travel summary - simplified for Tinder format
+    summaryDestination.textContent = 'Your destination';
+    summaryDuration.textContent = 'Not specified';
+    summaryTravelers.textContent = 'Not specified';
+    summaryInterests.textContent = 'Discovering your preferences';
     
     // Display preference sections with examples for swiping
-    if (data.sections && data.sections.length > 0) {
-        displayPreferenceSections(data.sections);
+    if (preferencesData && preferencesData.length > 0) {
+        displayPreferenceSections(preferencesData);
         preferenceSections.classList.remove('hidden');
         itinerarySections.classList.add('hidden');
         itineraryContent.classList.add('hidden');
     } else {
-        // Fallback to regular display if no sections
+        // Fallback to regular display if no categories/sections
         preferenceSections.classList.add('hidden');
         itinerarySections.classList.add('hidden');
         itineraryContent.classList.remove('hidden');
@@ -278,17 +277,18 @@ function displayPreferenceSections(sections) {
 function createPreferenceSectionElement(section, index) {
     const sectionDiv = document.createElement('div');
     sectionDiv.className = 'preference-section';
-    sectionDiv.dataset.sectionType = section.section_type;
+    sectionDiv.dataset.sectionType = section.type || section.section_type;
     
     const iconMap = {
         'dining': 'fas fa-utensils',
         'activities': 'fas fa-star',
+        'accommodations': 'fas fa-bed',
         'accommodation': 'fas fa-bed',
         'transportation': 'fas fa-car',
         'entertainment': 'fas fa-music'
     };
     
-    const iconClass = iconMap[section.section_type] || 'fas fa-info-circle';
+    const iconClass = iconMap[section.type || section.section_type] || 'fas fa-info-circle';
     
     sectionDiv.innerHTML = `
         <div class="section-header-new">
@@ -296,7 +296,7 @@ function createPreferenceSectionElement(section, index) {
                 <div class="section-icon-new ${section.section_type}">
                     <i class="${iconClass}"></i>
                 </div>
-                ${section.section_name}
+                ${section.name || section.section_name}
             </div>
             <div class="section-subtitle">
                 Swipe through these options to help us understand your preferences
@@ -377,8 +377,8 @@ function handleSwipe(sectionIndex, exampleIndex, action) {
     
     // Store preference
     const preferenceData = {
-        section_type: section.section_type,
-        section_name: section.section_name,
+        section_type: section.type || section.section_type,
+        section_name: section.name || section.section_name,
         example: example,
         action: action,
         timestamp: new Date().toISOString()
